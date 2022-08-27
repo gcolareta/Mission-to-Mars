@@ -1,4 +1,5 @@
 # Import Splinter, BeautifulSoup, and Pandas
+from turtle import title
 from splinter import Browser
 from bs4 import BeautifulSoup as soup
 import pandas as pd
@@ -12,15 +13,17 @@ def scrape_all():
     browser = Browser('chrome', **executable_path, headless=True)
 
     news_title, news_paragraph = mars_news(browser)
+    hemi = hemi_image(browser)
 
     # Run all scraping functions and store results in a dictionary
-    data = {
-        "news_title": news_title,
-        "news_paragraph": news_paragraph,
-        "featured_image": featured_image(browser),
-        "facts": mars_facts(),
-        "last_modified": dt.datetime.now()
-    }
+    data = {'Dict1':
+            {"news_title": news_title,
+             "news_paragraph": news_paragraph,
+             "featured_image": featured_image(browser),
+             "facts": mars_facts(),
+            "last_modified": dt.datetime.now()},
+            'hemi': hemi_image(browser)
+         }
 
     # Stop webdriver and return data
     browser.quit()
@@ -100,6 +103,33 @@ def mars_facts():
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
 
+
+def hemi_image(browser):
+    # visit the URL
+    url = 'https://marshemispheres.com/'
+    browser.visit(url)
+
+    # Create a list to hold the images and titles.
+    hemisphere_image_urls = []
+
+    # Write code to retrieve the image urls and titles for each hemisphere.
+    for i in range(1, 5):
+        xpath = f'//*[@id="product-section"]/div[2]/div[{i}]/div/a/h3'
+        browser.find_by_xpath(xpath).click()
+        url = browser.find_by_xpath('//*[@id="wide-image"]/div/ul/li[1]/a')['href']
+
+        title = browser.find_by_xpath(
+            '//*[@id="results"]/div[1]/div/div[3]/h2').text
+    
+        hemi = {}
+        hemi['img_url'] = url
+        hemi['title'] = title
+        hemisphere_image_urls.append(hemi)
+# Stop webdriver and return data
+        browser.back()                     
+    browser.quit()
+    return hemisphere_image_urls
+        
 
 if __name__ == "__main__":
 
