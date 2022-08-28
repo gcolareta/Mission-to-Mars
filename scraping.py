@@ -13,15 +13,13 @@ def scrape_all():
     browser = Browser('chrome', **executable_path, headless=True)
 
     news_title, news_paragraph = mars_news(browser)
-    hemi = hemi_image(browser)
 
     # Run all scraping functions and store results in a dictionary
-    data = {'Dict1':
-            {"news_title": news_title,
+    data = {"news_title": news_title,
              "news_paragraph": news_paragraph,
              "featured_image": featured_image(browser),
              "facts": mars_facts(),
-            "last_modified": dt.datetime.now()},
+            "last_modified": dt.datetime.now(),
             'hemi': hemi_image(browser)
          }
 
